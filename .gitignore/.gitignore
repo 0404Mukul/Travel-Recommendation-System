@@ -1,0 +1,16 @@
+# React
+node_modules/
+build/
+
+# .NET
+bin/
+obj/
+
+# VS Code
+.vscode/
+
+# Environment Files
+.env
+
+# Logs
+*.log
