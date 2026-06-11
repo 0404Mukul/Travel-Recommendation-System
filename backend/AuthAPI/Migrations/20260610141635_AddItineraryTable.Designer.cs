@@ -4,6 +4,7 @@ using AuthAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260610141635_AddItineraryTable")]
+    partial class AddItineraryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,18 +36,11 @@ namespace AuthAPI.Migrations
                     b.Property<decimal>("Budget")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("Destination")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Interests")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Recommendations")
                         .IsRequired()
                         .HasColumnType("longtext");
 
@@ -70,7 +66,7 @@ namespace AuthAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
@@ -96,13 +92,11 @@ namespace AuthAPI.Migrations
 
             modelBuilder.Entity("AuthAPI.Entities.Itinerary", b =>
                 {
-                    b.HasOne("AuthAPI.Entities.User", "User")
+                    b.HasOne("AuthAPI.Entities.User", null)
                         .WithMany("Itineraries")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AuthAPI.Entities.User", b =>

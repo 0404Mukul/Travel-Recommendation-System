@@ -3478,11 +3478,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ABC\\Desktop\\LoginPage\\backend\\AuthAPI\\AuthAPI.csproj",
+      "projectUniqueName": "C:\\Users\\ABC\\Downloads\\AirFlyNow\\LoginPage\\backend\\AuthAPI\\AuthAPI.csproj",
       "projectName": "AuthAPI",
-      "projectPath": "C:\\Users\\ABC\\Desktop\\LoginPage\\backend\\AuthAPI\\AuthAPI.csproj",
+      "projectPath": "C:\\Users\\ABC\\Downloads\\AirFlyNow\\LoginPage\\backend\\AuthAPI\\AuthAPI.csproj",
       "packagesPath": "C:\\Users\\ABC\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ABC\\Desktop\\LoginPage\\backend\\AuthAPI\\obj\\",
+      "outputPath": "C:\\Users\\ABC\\Downloads\\AirFlyNow\\LoginPage\\backend\\AuthAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ABC\\AppData\\Roaming\\NuGet\\NuGet.Config"

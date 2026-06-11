@@ -1,84 +1,90 @@
-using Microsoft.EntityFrameworkCore;
 using AuthAPI.Data;
-using AuthAPI.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<JwtHelper>();
 
-
-// Add Controller Services
+// Add Controllers
 builder.Services.AddControllers();
 
-
-// Swagger Services
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
-
-// Cors
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:3000")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
-});
-
-// Database Connection
+// MySQL Database
 builder.Services.AddDbContext<AppDbContext>(options =>
+{
     options.UseMySql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(
             builder.Configuration.GetConnectionString("DefaultConnection")
         )
-    )
-);
+    );
+});
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy",
+        policy =>
+        {
+            policy
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
+});
+
+// JWT Authentication
+builder.Services
+.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters =
+        new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
-            )
+
+            ValidIssuer =
+                builder.Configuration["Jwt:Issuer"],
+
+            ValidAudience =
+                builder.Configuration["Jwt:Audience"],
+
+            IssuerSigningKey =
+                new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(
+                        builder.Configuration["Jwt:Key"]!
+                    )
+                )
         };
-    });
+});
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-
-// Enable Swagger
+// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-
     app.UseSwaggerUI();
 }
 
-
-// HTTPS Redirection
+// Middleware Pipeline
 app.UseHttpsRedirection();
+
+app.UseCors("ReactPolicy");
+
 app.UseAuthentication();
+
 app.UseAuthorization();
-//Use Cors
-app.UseCors("AllowFrontend");
 
-// Enable Controller Routes
 app.MapControllers();
-
 
 app.Run();

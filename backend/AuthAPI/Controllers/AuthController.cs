@@ -2,9 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using AuthAPI.Data;
 using AuthAPI.Entities;
 using AuthAPI.DTOs;
-using Microsoft.EntityFrameworkCore;
 using AuthAPI.Helpers;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthAPI.Controllers
 {
@@ -13,71 +12,40 @@ namespace AuthAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly JwtHelper __jwtHelper;
+        private readonly Microsoft.Extensions.Configuration.IConfiguration _configuration;
 
-        public AuthController(AppDbContext context, JwtHelper jwtHelper)
+        public AuthController(AppDbContext context, Microsoft.Extensions.Configuration.IConfiguration configuration)
         {
             _context = context;
-            __jwtHelper = jwtHelper;
+            _configuration = configuration;
         }
 
-        [HttpGet("test")]
-        public IActionResult Test()
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(
+            RegisterDto dto)
         {
-            return Ok("Backend Working");
-        }
+            var userExists =
+                await _context.Users
+                    .AnyAsync(x =>
+                        x.Email == dto.Email);
 
-        [HttpPost("login")]
-        public IActionResult Login(LoginDto data)
-        {
-            var user = _context.Users.FirstOrDefault(x=>
-                x.Email == data.Email && x.Password == data.Password
-            );
-
-            if (user == null)
+            if (userExists)
             {
-                return BadRequest(new
-                {
-                    message = "Invalid Email or Password"
-                });
+                return BadRequest(
+                    "Email already exists");
             }
-            var token = __jwtHelper.GenerateToken(user.Email);
-            return Ok(new
-            {
-                message = "Login Success",
-                token = token
-            });
-        }
-        
-        [Authorize]
-        [HttpGet("profile")]
-        public IActionResult Profile()
-        {
-            return Ok(new
-            {
-                message = "Protected Profile Data"
-            });
-        }   
 
-        [HttpPost("signup")]
-        public async Task<IActionResult> Signup(SignupDto data)
-        {
-            var existingUser = _context.Users
-                .FirstOrDefault(x=> x.Email == data.Email);
-            
-            if (existingUser != null)
-            {
-                return BadRequest(new
-                {
-                    message = "Email Already Exist"
-                });
-            }
+            PasswordHelper.CreatePasswordHash(
+                dto.Password,
+                out byte[] passwordHash,
+                out byte[] passwordSalt);
 
             var user = new User
             {
-                Name = data.Name,
-                Email = data.Email,
-                Password = data.Password
+                Name = dto.Name,
+                Email = dto.Email,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
             };
 
             _context.Users.Add(user);
@@ -86,7 +54,55 @@ namespace AuthAPI.Controllers
 
             return Ok(new
             {
-                message = "User Registered Successfully"
+                message =
+                    "User registered successfully"
+            });
+        }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(
+            LoginDto dto)
+        {
+            var user = 
+                await _context.Users
+                    .FirstOrDefaultAsync(
+                        x=>x.Email == dto.Email
+                    );
+            
+            if(user == null)
+            {
+                return BadRequest(
+                    "Invalid credentials"
+                );
+            }
+
+            var isValid = 
+                PasswordHelper.VerifyPasswordHash(
+                    dto.Password,
+                    user.PasswordHash,
+                    user.PasswordSalt
+                );
+
+            if (!isValid)
+            {
+                return BadRequest(
+                    "Invalid credentials"
+                );
+            }
+
+            var token = 
+                JwtHelper.GenerateToken(
+                    user,
+                    _configuration
+                );
+
+            return Ok(new
+            {
+                token,
+                user.Id,
+                user.Name,
+                user.Email
             });
         }
     }

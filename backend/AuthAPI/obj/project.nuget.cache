@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hb2OPIBhx2Q=",
+  "dgSpecHash": "u64mEqERdW8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ABC\\Desktop\\LoginPage\\backend\\AuthAPI\\AuthAPI.csproj",
+  "projectFilePath": "C:\\Users\\ABC\\Downloads\\AirFlyNow\\LoginPage\\backend\\AuthAPI\\AuthAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ABC\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\ABC\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.8\\microsoft.aspnetcore.authentication.jwtbearer.8.0.8.nupkg.sha512",

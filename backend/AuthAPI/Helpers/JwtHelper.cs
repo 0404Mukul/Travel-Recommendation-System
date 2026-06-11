@@ -1,44 +1,60 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AuthAPI.Entities;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AuthAPI.Helpers
 {
-    public class JwtHelper
+    public static class JwtHelper
     {
-        private readonly IConfiguration _configuration;
-
-        public JwtHelper(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
-        public string GenerateToken(string email)
+        public static string GenerateToken(
+            User user,
+            IConfiguration configuration)
         {
             var claims = new[]
             {
-                new Claim(ClaimTypes.Email, email)
+                new Claim(
+                    ClaimTypes.NameIdentifier,
+                    user.Id.ToString()
+                ),
+
+                new Claim(
+                    ClaimTypes.Name,
+                    user.Name
+                ),
+
+                new Claim(
+                    ClaimTypes.Email,
+                    user.Email
+                )
             };
 
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(
-                    _configuration["Jwt:Key"]!
+                    configuration["Jwt:Key"]!
                 )
             );
 
-            var credentials = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256
-            );
+            var credentials =
+                new SigningCredentials(
+                    key,
+                    SecurityAlgorithms.HmacSha256
+                );
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: credentials
-            );
+            var token =
+                new JwtSecurityToken(
+                    issuer:
+                        configuration["Jwt:Issuer"],
+                    audience:
+                        configuration["Jwt:Audience"],
+                    claims:
+                        claims,
+                    expires:
+                        DateTime.UtcNow.AddDays(7),
+                    signingCredentials:
+                        credentials
+                );
 
             return new JwtSecurityTokenHandler()
                 .WriteToken(token);
