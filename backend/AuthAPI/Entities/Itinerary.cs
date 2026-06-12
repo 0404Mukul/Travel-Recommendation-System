@@ -1,4 +1,3 @@
-using System;
 namespace AuthAPI.Entities
 {
     public class Itinerary
@@ -17,9 +16,15 @@ namespace AuthAPI.Entities
 
         public string Recommendations { get; set; } = string.Empty;
 
-        public DateTime CreatedAt { get; set; }
-            = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public User User { get; set; } = null!;
+
+    
+        public ICollection<SharedLink> SharedLinks
+        {
+            get;
+            set;
+        } = new List<SharedLink>();
     }
 }

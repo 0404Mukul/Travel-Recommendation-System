@@ -1,5 +1,3 @@
-using AuthAPI.Entities;
-
 namespace AuthAPI.Entities
 {
     public class User

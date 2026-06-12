@@ -13,6 +13,12 @@ namespace AuthAPI.Data
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<SharedLink> SharedLinks
+        {
+            get;
+            set;
+        }
+
         public DbSet<Itinerary> Itineraries { get; set; }
     }
 }

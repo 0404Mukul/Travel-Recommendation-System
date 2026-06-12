@@ -6,14 +6,38 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add Controllers
 builder.Services.AddControllers();
 
-// Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
-// MySQL Database
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Enter your JWT token below (no need to type 'Bearer ' prefix)."
+    });
+
+    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseMySql(
@@ -24,22 +48,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     );
 });
 
-// CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("ReactPolicy",
-        policy =>
-        {
-            policy
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
-});
-
-// JWT Authentication
 builder.Services
-.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddAuthentication(
+    JwtBearerDefaults.AuthenticationScheme
+)
 .AddJwtBearer(options =>
 {
     options.TokenValidationParameters =
@@ -67,19 +79,27 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy",
+        policy =>
+        {
+            policy
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
+        });
+});
+
 var app = builder.Build();
 
-// Swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-// Middleware Pipeline
-app.UseHttpsRedirection();
+// Enable Swagger UI for local testing regardless of environment
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("ReactPolicy");
+
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 

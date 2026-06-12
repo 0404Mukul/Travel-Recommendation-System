@@ -62,6 +62,31 @@ namespace AuthAPI.Migrations
                     b.ToTable("Itineraries");
                 });
 
+            modelBuilder.Entity("AuthAPI.Entities.SharedLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("ItineraryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PublicToken")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItineraryId");
+
+                    b.ToTable("SharedLinks");
+                });
+
             modelBuilder.Entity("AuthAPI.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -103,6 +128,22 @@ namespace AuthAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AuthAPI.Entities.SharedLink", b =>
+                {
+                    b.HasOne("AuthAPI.Entities.Itinerary", "Itinerary")
+                        .WithMany("SharedLinks")
+                        .HasForeignKey("ItineraryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Itinerary");
+                });
+
+            modelBuilder.Entity("AuthAPI.Entities.Itinerary", b =>
+                {
+                    b.Navigation("SharedLinks");
                 });
 
             modelBuilder.Entity("AuthAPI.Entities.User", b =>
