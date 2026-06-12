@@ -1,0 +1,17 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace TravelRecommendationEngine.Models;
+
+public sealed class ItineraryPromptRequest
+{
+    [Required]
+    public string DestinationName { get; init; } = string.Empty;
+
+    [Required]
+    public string BestTimeToVisit { get; init; } = string.Empty;
+
+    [Range(1, 30)]
+    public int Days { get; init; } = 5;
+
+    public bool IsFamilyTrip { get; init; } = true;
+}
