@@ -1,0 +1,7 @@
+ActivityID,DestinationID,Name,Category,DurationHours,Difficulty,Popularity
+1,1,Sunset Cruise,Relaxation,3,Easy,9.0
+2,1,Beach Yoga,Wellness,1.5,Easy,8.4
+3,2,City Fort Tour,Cultural,4,Moderate,8.7
+4,3,Tea Plantation Walk,Nature,3,Easy,8.2
+5,4,Temple Exploration,Cultural,2,Easy,7.8
+6,5,Museum Visit,Cultural,2.5,Easy,7.5

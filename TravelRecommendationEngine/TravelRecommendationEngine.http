@@ -1,0 +1,24 @@
+@TravelRecommendationEngine_HostAddress = http://localhost:5260
+
+POST {{TravelRecommendationEngine_HostAddress}}/api/recommendations
+Content-Type: application/json
+
+{
+  "userId": 123
+}
+
+###
+
+GET {{TravelRecommendationEngine_HostAddress}}/api/weather/Goa%20Beaches
+
+###
+
+POST {{TravelRecommendationEngine_HostAddress}}/api/recommendations/itinerary-prompt
+Content-Type: application/json
+
+{
+  "destinationName": "Goa Beaches",
+  "bestTimeToVisit": "Nov-Mar",
+  "days": 5,
+  "isFamilyTrip": true
+}

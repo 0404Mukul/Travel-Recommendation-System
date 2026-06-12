@@ -1,0 +1,6 @@
+HotelID,DestinationID,Name,StarRating,PricePerNight,Amenities
+1,1,Seaview Resort,5,140,Pool;Spa;Beach Access
+2,1,Beachside Inn,4,95,Breakfast;Sea View
+3,2,Heritage Palace,5,160,Pool;Guided Tours
+4,3,Hilltop Retreat,4,110,Garden;Hiking Access
+5,4,Ancient Stay,4,105,Historic Atmosphere;Local Cuisine

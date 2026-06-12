@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Travel-Recommendation-System/TravelRecommendationEngine.Tests/TravelRecommendationEngine.Tests.csproj" />
+  <Project Path="Travel-Recommendation-System/TravelRecommendationEngine/TravelRecommendationEngine.csproj" />
+</Solution>
